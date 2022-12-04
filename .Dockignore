@@ -1,0 +1,6 @@
+.git*
+settings/local.py
+**/__pycache__
+db/
+LICENCE
+README*.md
