@@ -1,18 +1,67 @@
+from django.contrib.auth import authenticate
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from rest_framework.serializers import ModelSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework_json_api import serializers
 
 from .models import UserProfile
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['groups', 'user_permissions', 'password']
 
 
-class UserProfileSerializer(ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    user = UserSerializer(many=False)
 
     class Meta:
         model = UserProfile
-        exclude = ['preferred_language']
+        exclude = ['id', 'preferred_language']
+        # fields = ['user']
+
+
+class UserLoginSerializer(serializers.Serializer):
+
+    class Meta:
+        resource_name = "login"
+
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    default_error_messages = {
+        'inactive_account': _('User account is disabled.'),
+        'invalid_credentials': _('Unable to login with provided credentials.')
+    }
+
+    def __init__(self, *args, **kwargs):
+        super(UserLoginSerializer, self).__init__(*args, **kwargs)
+        self.user = None
+
+    def validate(self, attrs):
+        self.user = authenticate(
+            username=attrs.get('username'),
+            password=attrs.get('password')
+        )
+        if self.user:
+            if not self.user.is_active:
+                raise serializers.ValidationError(
+                    self.error_messages['inactive_account']
+                )
+            return attrs
+        else:
+            raise serializers.ValidationError(
+                self.error_messages['invalid_credentials']
+            )
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    auth_token = serializers.CharField(source='key')
+
+    class Meta:
+        model = Token
+        fields = ("auth_token", "created")

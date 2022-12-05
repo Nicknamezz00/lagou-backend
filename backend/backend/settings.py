@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework
     'django_filters',
     'rest_framework.authtoken',  # Used to enable token authentication
-
+    'drf_yasg',
     # apps
     'users',
 ]
@@ -114,25 +114,25 @@ else:
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -151,9 +151,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# JSON_API_UNIFORM_EXCEPTIONS = True
+
+# from rest_framework_json_api.exceptions
+
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
-    'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
+    'EXCEPTION_HANDLER': (
+        'rest_framework_json_api.exceptions.exception_handler',
+    ),
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework_json_api.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
@@ -166,13 +172,19 @@ REST_FRAMEWORK = {
     'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework_json_api.filters.QueryParameterValidationFilter',
+        # 'rest_framework_json_api.filters.QueryParameterValidationFilter',
         'rest_framework_json_api.filters.OrderingFilter',
         'rest_framework_json_api.django_filters.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
+    ),
+    'TEST_REQUEST_RENDERER_CLASSES': (
+        # 'example.utils.BrowsableAPIRendererWithoutForms'
+        'rest_framework_json_api.renderers.JSONRenderer',
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'vnd.api+json',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'SEARCH_PARAM': 'filter[search]',
+
 }
