@@ -1,28 +1,14 @@
 # lagou-backend
 
-#### 介绍
-Python 项目作业
+Python 项目作业，
 
-for educational purposes only
-
-#### 软件架构
-Django4.0 + Scrapy + MySQL + Redis
+#### Prerequisites
+Python $\ge$ 3.9，Django，Django REST framework，Docker，Scrapy，MySQL，Redis
 
 
-#### 安装教程
+#### Getting started
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-4.  新建 Pull Request
+1. `python -m venv venv`
+2. `source /venv/bin/activate`
+3. `pip install -r requirements.txt`
+4. `docker-compose up -d --build`
