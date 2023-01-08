@@ -10,4 +10,5 @@ urlpatterns = router.urls
 
 urlpatterns += [
     path(r'api/login/', views.UserLoginAPIView.as_view(), name='login'),
+    path(r'api/register/', views.UserRegisterAPIView.as_view(), name='register')
 ]

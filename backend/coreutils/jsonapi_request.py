@@ -1,10 +1,10 @@
-def JsonAPIRequest(type: str=None, attrs: dict=None):
-    if not type or not attrs:
+def json_api_request(resource: str = None, attrs: dict = None):
+    if not resource or not attrs:
         raise ValueError()
     req = {
-            "data": {
-                "type": f'{type}',
-                "attributes": attrs
-            }
+        "data": {
+            "type": f'{resource}',
+            "attributes": attrs
         }
+    }
     return req

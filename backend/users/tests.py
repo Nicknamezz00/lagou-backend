@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIRequestFactory, RequestsClient
 
-from coreutils.jsonapi_request import JsonAPIRequest
-from coreutils.lagou_test import LagouTestUtils
+from coreutils.jsonapi_request import json_api_request
+from coreutils.test_utils import LagouTestUtils, rsg
 from users.models import UserProfile
 
 
@@ -43,6 +43,17 @@ class UserTestCase(APITestCase, LagouTestUtils):
                 UserProfile.objects.get(user=user),
                 msg=f'Did not find profile for {user.username}!')
 
+    def test_casade(self):
+        u = self.create_user(
+            username='test_cascade',
+            password='test_cascade'
+        )
+        self._User.objects.get(username='test_cascade').delete()
+        self.assertEqual(
+            self._User.objects.filter(username='test_cascade').count(), 0)
+        self.assertEqual(
+            Token.objects.filter(user__username='test_cascade').count(), 0)
+
 
 class UserLoginAPIViewTestCase(APITestCase, LagouTestUtils):
 
@@ -62,6 +73,25 @@ class UserLoginAPIViewTestCase(APITestCase, LagouTestUtils):
             "username": self.username,
             "password": self.password
         }
-        data = JsonAPIRequest(type='login', attrs=attrs)
+        data = json_api_request(resource='login', attrs=attrs)
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class UserRegisterAPIViewTestCase(APITestCase, LagouTestUtils):
+    def setUp(self) -> None:
+        self.resource = 'register'
+        self.url = reverse('register')
+        self.username = f'register_user_{rsg()}'
+        self.password = f'register_user_{rsg()}'
+
+    def test_register(self):
+        attrs = {
+            "username": self.username,
+            "password": self.password,
+            "password2": self.password
+        }
+        data = json_api_request(resource=self.resource, attrs=attrs)
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # self.assertEqual(User.objects.get(username=self.username).count(), 1)
