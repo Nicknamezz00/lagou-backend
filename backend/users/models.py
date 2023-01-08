@@ -23,6 +23,9 @@ class UserProfile(models.Model):
         verbose_name = _("user profile")
         verbose_name_plural = _("user profiles")
 
+    class JSONAPIMeta:
+        resource_name = "user_profiles"
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
